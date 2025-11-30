@@ -7,7 +7,7 @@
  * Display the main menu with options
  */
 export function displayMenu(): void {
-  console.log('\n=== To-Do List Menu ===');
+  console.log('=== To-Do List Menu ===');
   console.log('1. Add task');
   console.log('2. View tasks');
   console.log('3. Delete task');
