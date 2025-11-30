@@ -8,9 +8,7 @@ import {
   displayTasksFooter,
   displaySuccess,
   displayError,
-  formatTask,
-  toggleDarkMode,
-  isDarkModeEnabled
+  formatTask
 } from './utils';
 
 /**
@@ -30,24 +28,25 @@ export class TodoApp {
    */
   private addNewTask(): void {
     clearScreen();
-    console.log('\n' + '-'.repeat(50));
-    console.log('          ADAUGĂ UN TASK NOU');
-    console.log('-'.repeat(50) + '\n');
+    console.log('\n' + '-'.repeat(26));
+    console.log('    ADD A TASK');
+    console.log('-'.repeat(26) + '\n');
 
     try {
-      const task = readlineSync.question('Introdu taskul nou (max 100 caractere): ');
+      const task = readlineSync.question('Enter your task (max 100 chars): ');
       
       if (!task.trim()) {
-        displayError('Task-ul nu poate fi gol!');
+        displayError('Task cannot be empty!');
       } else {
         this.todoList.addTask(task);
+        displaySuccess('Task added!');
       }
     } catch (error) {
-      displayError('Eroare la introducerea taskului');
+      displayError('Error adding task');
     }
 
-    console.log('-'.repeat(50));
-    readlineSync.question('\nApasă Enter pentru a continua...');
+    console.log('\n' + '-'.repeat(26));
+    readlineSync.question('Press Enter to continue...');
   }
 
   /**
@@ -60,7 +59,7 @@ export class TodoApp {
     const tasks = this.todoList.getTasks();
     
     if (tasks.length === 0) {
-      console.log('❌ Nu avezi taskuri! Adaugă unul nou pentru a începe.\n');
+      console.log('No tasks yet. Add one to get started!\n');
     } else {
       // forEach with index to display numbered tasks
       tasks.forEach((task, index) => {
@@ -71,7 +70,7 @@ export class TodoApp {
     }
 
     displayTasksFooter(tasks.length);
-    readlineSync.question('Apasă Enter pentru a continua...');
+    readlineSync.question('Press Enter to continue...');
   }
 
   /**
@@ -79,8 +78,8 @@ export class TodoApp {
    */
   private deleteTaskMenu(): void {
     if (this.todoList.isEmpty()) {
-      displayError('Nu avezi taskuri de șters!');
-      readlineSync.question('\nApasă Enter pentru a continua...');
+      displayError('No tasks to delete!');
+      readlineSync.question('\nPress Enter to continue...');
       return;
     }
 
@@ -98,24 +97,24 @@ export class TodoApp {
       displayTasksFooter(tasks.length);
       displayTaskMenu();
 
-      const choice = readlineSync.question('Alege o opțiune (1-3): ').trim();
+      const choice = readlineSync.question('Enter your choice (1-3): ').trim();
 
       switch (choice) {
         case '1':
-          const indexInput = readlineSync.question('\nIntrodu indexul taskului de șters: ');
+          const indexInput = readlineSync.question('\nEnter task number to delete: ');
           this.todoList.deleteTaskByIndex(indexInput);
           break;
         case '2':
-          const nameInput = readlineSync.question('\nIntrodu numele taskului de șters: ');
+          const nameInput = readlineSync.question('\nEnter task name to delete: ');
           this.todoList.deleteTaskByName(nameInput);
           break;
         case '3':
           return;
         default:
-          displayError('Opțiune invalidă! Alege din nou.');
+          displayError('Invalid option! Try again.');
       }
 
-      readlineSync.question('\nApasă Enter pentru a continua...');
+      readlineSync.question('\nPress Enter to continue...');
     }
   }
 
@@ -123,23 +122,21 @@ export class TodoApp {
    * Confirm exit before closing application
    */
   private confirmExit(): void {
-    console.log('\n' + '='.repeat(50));
-    console.log('Sigur dorești să ieșești din aplicație?');
-    console.log(`Ai ${this.todoList.getTaskCount()} task(uri) în listă.`);
-    console.log('='.repeat(50));
+    console.log('\n' + '='.repeat(26));
+    console.log('Confirm exit? (yes/no): ');
+    console.log('='.repeat(26));
 
     const choice = readlineSync
-      .question("\nTastează 'da' pentru a confirma ieșirea: ")
+      .question("Type 'yes' to confirm exit: ")
       .trim()
       .toLowerCase();
 
-    if (choice === 'da' || choice === 'yes' || choice === 'y') {
-      console.log('\n✓ Mulțumesc că ai folosit To-Do List! 👋');
-      console.log('  Toate taskurile tale au fost salvate.\n');
+    if (choice === 'yes' || choice === 'y') {
+      console.log('\nThank you for using the To-Do List CLI. Goodbye!\n');
       this.running = false;
     } else {
-      console.log('✓ Ieșirea a fost anulată. Te întorci la meniu...\n');
-      readlineSync.question('Apasă Enter pentru a continua...');
+      console.log('\nExit cancelled. Back to menu...\n');
+      readlineSync.question('Press Enter to continue...');
     }
   }
 
@@ -147,14 +144,14 @@ export class TodoApp {
    * Main application loop - Keep running until user exits
    */
   public run(): void {
-    console.log('\n🎉 Bun venit la aplicația To-Do List!\n');
-    readlineSync.question('Apasă Enter pentru a începe...');
+    console.log('\nWelcome to To-Do List!\n');
+    readlineSync.question('Press Enter to start...');
 
     while (this.running) {
       try {
         clearScreen();
         displayMenu();
-        const choice = readlineSync.question('Alege o opțiune (1-4): ').trim();
+        const choice = readlineSync.question('Enter your choice (1-4): ').trim();
 
         switch (choice) {
           case '1':
@@ -170,13 +167,12 @@ export class TodoApp {
             this.confirmExit();
             break;
           default:
-            console.log('\n✗ EROARE: Opțiune invalidă!');
-            console.log('  Alege o opțiune între 1 și 4.\n');
-            readlineSync.question('Apasă Enter pentru a continua...');
+            console.log('\nInvalid option! Choose 1-4.\n');
+            readlineSync.question('Press Enter to continue...');
         }
       } catch (error) {
-        displayError('Eroare neașteptată');
-        readlineSync.question('Apasă Enter pentru a încerca din nou...');
+        displayError('Unexpected error');
+        readlineSync.question('Press Enter to try again...');
       }
     }
   }
