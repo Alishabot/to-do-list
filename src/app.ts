@@ -8,7 +8,9 @@ import {
   displayTasksFooter,
   displaySuccess,
   displayError,
-  formatTask
+  formatTask,
+  toggleDarkMode,
+  isDarkModeEnabled
 } from './utils';
 
 /**

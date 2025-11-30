@@ -3,18 +3,69 @@
  * Provides common functions for display, input handling, and terminal management
  */
 
+// ANSI Color codes for terminal styling
+const Colors = {
+  RESET: '\x1b[0m',
+  BRIGHT: '\x1b[1m',
+  DIM: '\x1b[2m',
+  // Text colors
+  WHITE: '\x1b[37m',
+  GRAY: '\x1b[90m',
+  CYAN: '\x1b[36m',
+  GREEN: '\x1b[32m',
+  RED: '\x1b[31m',
+  YELLOW: '\x1b[33m',
+  BLUE: '\x1b[34m',
+  // Background colors (dark mode)
+  BG_DARK: '\x1b[40m',
+  BG_DARK_GRAY: '\x1b[100m',
+};
+
+// Dark mode state
+let darkModeEnabled = true;
+
+/**
+ * Toggle dark mode on/off
+ */
+export function toggleDarkMode(): void {
+  darkModeEnabled = !darkModeEnabled;
+}
+
+/**
+ * Check if dark mode is enabled
+ */
+export function isDarkModeEnabled(): boolean {
+  return darkModeEnabled;
+}
+
+/**
+ * Apply dark mode styling to text
+ */
+function applyStyle(text: string, color: string, bright: boolean = false): string {
+  if (!darkModeEnabled) return text;
+  const brightCode = bright ? Colors.BRIGHT : '';
+  return `${brightCode}${color}${text}${Colors.RESET}`;
+}
+
 /**
  * Display the main menu with options
  */
 export function displayMenu(): void {
-  console.log('\n' + '='.repeat(50));
-  console.log('         🚀 MENIU PRINCIPAL - TO-DO LIST 🚀');
-  console.log('='.repeat(50));
-  console.log('\n1. ➕ Adaugă un task nou');
-  console.log('2. 📋 Vizualizează toate taskurile');
-  console.log('3. ❌ Șterge un task');
-  console.log('4. 🚪 Ieșire din aplicație');
-  console.log('\n' + '='.repeat(50) + '\n');
+  const border = applyStyle('='.repeat(50), Colors.CYAN, true);
+  const title = applyStyle('🚀 MENIU PRINCIPAL - TO-DO LIST 🚀', Colors.BLUE, true);
+  const option1 = applyStyle('1. ➕ Adaugă un task nou', Colors.GREEN);
+  const option2 = applyStyle('2. 📋 Vizualizează toate taskurile', Colors.CYAN);
+  const option3 = applyStyle('3. ❌ Șterge un task', Colors.YELLOW);
+  const option4 = applyStyle('4. 🚪 Ieșire din aplicație', Colors.RED);
+  
+  console.log('\n' + border);
+  console.log('         ' + title);
+  console.log(border);
+  console.log('\n' + option1);
+  console.log(option2);
+  console.log(option3);
+  console.log(option4);
+  console.log('\n' + border + '\n');
 }
 
 /**
@@ -38,35 +89,49 @@ export function normalizeInput(input: string): string {
  * Display task viewing menu
  */
 export function displayTaskMenu(): void {
-  console.log('\n' + '-'.repeat(50));
-  console.log('          OPȚIUNI DE ȘTERGERE');
-  console.log('-'.repeat(50));
-  console.log('1. 🔢 Șterge după index (număr)');
-  console.log('2. 🔤 Șterge după nume');
-  console.log('3. ↩️  Înapoi la meniu principal');
-  console.log('-'.repeat(50) + '\n');
+  const border = applyStyle('-'.repeat(50), Colors.CYAN);
+  const title = applyStyle('OPȚIUNI DE ȘTERGERE', Colors.YELLOW, true);
+  const option1 = applyStyle('1. 🔢 Șterge după index (număr)', Colors.GREEN);
+  const option2 = applyStyle('2. 🔤 Șterge după nume', Colors.GREEN);
+  const option3 = applyStyle('3. ↩️  Înapoi la meniu principal', Colors.BLUE);
+  
+  console.log('\n' + border);
+  console.log('          ' + title);
+  console.log(border);
+  console.log(option1);
+  console.log(option2);
+  console.log(option3);
+  console.log(border + '\n');
 }
 
 /**
  * Display current tasks header
  */
 export function displayTasksHeader(): void {
-  console.log('\n' + '='.repeat(50));
-  console.log('           📋 LISTA DE TASKURI CURENTE 📋');
-  console.log('='.repeat(50) + '\n');
+  const border = applyStyle('='.repeat(50), Colors.CYAN, true);
+  const title = applyStyle('📋 LISTA DE TASKURI CURENTE 📋', Colors.BLUE, true);
+  
+  console.log('\n' + border);
+  console.log('           ' + title);
+  console.log(border + '\n');
 }
 
 /**
  * Display tasks footer
  */
 export function displayTasksFooter(count: number): void {
+  const border = applyStyle('='.repeat(50), Colors.CYAN, true);
+  const separator = applyStyle('━'.repeat(50), Colors.GRAY);
+  
   if (count > 0) {
-    console.log(`\n📊 Total: ${count} task(uri) în listă`);
-    console.log('━'.repeat(50));
+    const totalMsg = applyStyle(`📊 Total: ${count} task(uri) în listă`, Colors.GREEN);
+    console.log('\n' + totalMsg);
+    console.log(separator);
   } else {
-    console.log('❌ Nu avezi taskuri! Adaugă unul nou pentru a începe.');
+    const emptyMsg = applyStyle('❌ Nu avezi taskuri! Adaugă unul nou pentru a începe.', Colors.YELLOW);
+    console.log(emptyMsg);
   }
-  console.log('='.repeat(50) + '\n');
+  console.log(border + '\n');
 }
 
 /**
@@ -79,7 +144,14 @@ export function displayTasksFooter(count: number): void {
  */
 export function formatTask(index: number, taskName: string, completed: boolean = false): string {
   const status = completed ? '✓' : ' ';
-  return `  [${index.toString().padStart(2, ' ')}] ${status} ${taskName}`;
+  const statusColor = completed ? Colors.GREEN : Colors.GRAY;
+  const taskColor = completed ? Colors.GRAY : Colors.WHITE;
+  
+  const indexPart = applyStyle(`[${index.toString().padStart(2, ' ')}]`, Colors.CYAN);
+  const statusPart = applyStyle(status, statusColor, true);
+  const taskPart = applyStyle(taskName, taskColor);
+  
+  return `  ${indexPart} ${statusPart} ${taskPart}`;
 }
 
 /**
@@ -88,7 +160,8 @@ export function formatTask(index: number, taskName: string, completed: boolean =
  * @param message - Success message
  */
 export function displaySuccess(message: string): void {
-  console.log(`✓ ${message}`);
+  const msg = applyStyle(`✓ ${message}`, Colors.GREEN, true);
+  console.log(msg);
 }
 
 /**
@@ -97,7 +170,8 @@ export function displaySuccess(message: string): void {
  * @param message - Error message
  */
 export function displayError(message: string): void {
-  console.log(`✗ ${message}`);
+  const msg = applyStyle(`✗ ${message}`, Colors.RED, true);
+  console.log(msg);
 }
 
 /**
@@ -106,5 +180,6 @@ export function displayError(message: string): void {
  * @param message - Info message
  */
 export function displayInfo(message: string): void {
-  console.log(`ℹ ${message}`);
+  const msg = applyStyle(`ℹ ${message}`, Colors.BLUE);
+  console.log(msg);
 }
