@@ -28,25 +28,16 @@ export class TodoApp {
    */
   private addNewTask(): void {
     clearScreen();
-    console.log('\n' + '-'.repeat(26));
-    console.log('    ADD A TASK');
-    console.log('-'.repeat(26) + '\n');
-
-    try {
-      const task = readlineSync.question('Enter your task (max 100 chars): ');
-      
-      if (!task.trim()) {
-        displayError('Task cannot be empty!');
-      } else {
-        this.todoList.addTask(task);
-        displaySuccess('Task added!');
-      }
-    } catch (error) {
-      displayError('Error adding task');
+    const task = readlineSync.question('Enter task: ');
+    
+    if (!task.trim()) {
+      displayError('Task cannot be empty!');
+    } else {
+      this.todoList.addTask(task);
+      displaySuccess('Task added!');
     }
 
-    console.log('\n' + '-'.repeat(26));
-    readlineSync.question('Press Enter to continue...');
+    readlineSync.question('\nPress Enter to continue...');
   }
 
   /**
@@ -59,9 +50,8 @@ export class TodoApp {
     const tasks = this.todoList.getTasks();
     
     if (tasks.length === 0) {
-      console.log('No tasks yet. Add one to get started!\n');
+      console.log('No tasks yet!\n');
     } else {
-      // forEach with index to display numbered tasks
       tasks.forEach((task, index) => {
         const displayIndex = index + 1;
         const formattedTask = formatTask(displayIndex, task.title, task.completed);
@@ -101,17 +91,17 @@ export class TodoApp {
 
       switch (choice) {
         case '1':
-          const indexInput = readlineSync.question('\nEnter task number to delete: ');
+          const indexInput = readlineSync.question('Enter task number: ');
           this.todoList.deleteTaskByIndex(indexInput);
           break;
         case '2':
-          const nameInput = readlineSync.question('\nEnter task name to delete: ');
+          const nameInput = readlineSync.question('Enter task name: ');
           this.todoList.deleteTaskByName(nameInput);
           break;
         case '3':
           return;
         default:
-          displayError('Invalid option! Try again.');
+          displayError('Invalid option!');
       }
 
       readlineSync.question('\nPress Enter to continue...');
@@ -122,12 +112,8 @@ export class TodoApp {
    * Confirm exit before closing application
    */
   private confirmExit(): void {
-    console.log('\n' + '='.repeat(26));
-    console.log('Confirm exit? (yes/no): ');
-    console.log('='.repeat(26));
-
     const choice = readlineSync
-      .question("Type 'yes' to confirm exit: ")
+      .question('Are you sure you want to exit? (yes/no): ')
       .trim()
       .toLowerCase();
 
@@ -135,7 +121,7 @@ export class TodoApp {
       console.log('\nThank you for using the To-Do List CLI. Goodbye!\n');
       this.running = false;
     } else {
-      console.log('\nExit cancelled. Back to menu...\n');
+      console.log('Exit cancelled. Back to menu...\n');
       readlineSync.question('Press Enter to continue...');
     }
   }
@@ -144,8 +130,7 @@ export class TodoApp {
    * Main application loop - Keep running until user exits
    */
   public run(): void {
-    console.log('\nWelcome to To-Do List!\n');
-    readlineSync.question('Press Enter to start...');
+    console.log('Welcome to the To-Do List CLI!\n');
 
     while (this.running) {
       try {
@@ -167,7 +152,7 @@ export class TodoApp {
             this.confirmExit();
             break;
           default:
-            console.log('\nInvalid option! Choose 1-4.\n');
+            console.log('Invalid option! Choose 1-4.\n');
             readlineSync.question('Press Enter to continue...');
         }
       } catch (error) {

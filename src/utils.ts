@@ -7,13 +7,12 @@
  * Display the main menu with options
  */
 export function displayMenu(): void {
-  console.log('\n' + '='.repeat(26));
-  console.log('   TO-DO LIST MENU');
+  console.log('\n=== To-Do List Menu ===');
   console.log('1. Add task');
   console.log('2. View tasks');
   console.log('3. Delete task');
   console.log('4. Exit');
-  console.log('='.repeat(26));
+  console.log('========================');
 }
 
 /**
@@ -37,35 +36,25 @@ export function normalizeInput(input: string): string {
  * Display task viewing menu
  */
 export function displayTaskMenu(): void {
-  console.log('\n' + '-'.repeat(26));
-  console.log('    DELETE OPTIONS');
+  console.log('\n--- Delete Options ---');
   console.log('1. Delete by index');
   console.log('2. Delete by name');
   console.log('3. Back to menu');
-  console.log('-'.repeat(26) + '\n');
+  console.log('---------------------\n');
 }
 
 /**
  * Display current tasks header
  */
 export function displayTasksHeader(): void {
-  console.log('\n' + '='.repeat(26));
-  console.log('     YOUR TASKS');
-  console.log('='.repeat(26) + '\n');
+  console.log('\n=== Your Tasks ===');
 }
 
 /**
  * Display tasks footer
  */
 export function displayTasksFooter(count: number): void {
-  if (count > 0) {
-    console.log(`\nTotal: ${count} task(s)`);
-    console.log('='.repeat(26));
-  } else {
-    console.log('No tasks yet. Add one to get started!');
-    console.log('='.repeat(26));
-  }
-  console.log('');
+  console.log('==================\n');
 }
 
 /**
