@@ -3,6 +3,12 @@
  * Provides common functions for display, input handling, and terminal management
  */
 
+// Enable ANSI color support in Windows PowerShell
+if (process.platform === 'win32') {
+  // For Windows 10+ with Virtual Terminal enabled
+  process.stdout.write('\x1b[?25h'); // Show cursor
+}
+
 // ANSI Color codes for terminal styling
 const Colors = {
   RESET: '\x1b[0m',
@@ -16,6 +22,7 @@ const Colors = {
   RED: '\x1b[31m',
   YELLOW: '\x1b[33m',
   BLUE: '\x1b[34m',
+  MAGENTA: '\x1b[35m',
   // Background colors (dark mode)
   BG_DARK: '\x1b[40m',
   BG_DARK_GRAY: '\x1b[100m',
